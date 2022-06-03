@@ -3,6 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Team;
+use App\Models\Roster;
+use App\Models\PlayerTotal;
+use App\Actions\Export\ {
+    Export,
+    GetPlayerInformation
+};
 
 class ExportController extends Controller
 {
@@ -11,9 +18,15 @@ class ExportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, GetPlayerInformation $getPlayerInformation, Export $export)
     {
-        return 123;
+        $data = $getPlayerInformation->execute(
+            $request->get('type', 'playerstats'),
+            $request->all(),
+            $request->get('format', 'html')
+        );
+
+        return $export->execute($request->get('type', 'playerstats'), $data, $request->get('format', 'html'));
     }
 
     /**
